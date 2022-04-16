@@ -1,0 +1,121 @@
+app:
+  id: @project.parent.artifactId@
+  logdir: /data/applogs
+  owner: 王飞|wangfei@tianyancha.com
+
+apollo:
+  cacheDir: /data/apollo/${app.id}
+  cluster: default
+  autoUpdateInjectedSpringProperties: false
+  bootstrap:
+    enabled: true
+    namespaces: application
+#    ,TYC-STD.cloud.common,TYC-STD.cloud.eureka,TYC-STD.mysql.userFollow
+
+
+#红包超时自动退回 自定义系统级配置
+user:
+  flex:
+    redPacketTimeoutSec: 30
+
+
+#TYC-STD.cloud.common
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
+  hystrix:
+    enabled: true
+hystrix:
+  threadpool:
+    default:
+      allowMaximumSizeToDivergeFromCoreSize: true
+      coreSize: 20
+      keepAliveTimeMinutes: 1
+      maxQueueSize: 10
+      maximumSize: 50
+      queueSizeRejectionThreshold: 30
+logging:
+  level:
+    com:
+      jindidata:
+        '*':
+          client: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        exclude:
+          - shutdown
+        include: '*'
+sentry:
+  logging:
+    enabled: true
+    minimum-breadcrumb-level: debug
+    minimum-event-level: error
+server:
+  port: 20001
+  tomcat:
+    max-threads: 200
+    min-spare-threads: 50
+    accesslog:
+      directory: ${app.logdir}/current/${app.id}/
+      enabled: true
+      fileDateFormat: .yyyyMMdd
+      pattern: '%h %l %u %t "%r"s %s %b %D'
+      prefix: access_log.${hostname}
+    uri-encoding: UTF-8
+spring:
+  profiles:
+    active: locale
+  application:
+    name: ${app.id}
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration,org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration,org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration,org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+#  security:
+#    user:
+#      name: jindi
+#      password: yjyqhyxxcyshys
+  redis:
+    database: 7
+    host: 172.24.113.140
+    port: 16379
+    password: jindiredis4test
+    connectTimeout: 120000
+    readTimeout: 600000
+
+
+
+#TYC-STD.cloud.eureka
+eureka:
+  client:
+    registryFetchIntervalSeconds: 5
+    service-url:
+      defaultZone: http://172.24.113.142:10001/eureka/
+  instance:
+    hostname: ${HOSTNAME}
+    instance-id: ${eureka.instance.hostname}:${server.port}
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+ribbon:
+  ServerListRefreshInterval: 5000
+
+
+#TYC-STD.mysql.userFollow
+datasource:
+  userfollow:
+    jdbcUrl: ${datasource.userfollow.url}
+    password: J1ndiBxy^t
+    url: jdbc:mysql://rm-2zek5z37w8q1rf5b5.mysql.rds.aliyuncs.com:3306/std-me?useUnicode=true&characterEncoding=UTF8&connectTimeout=1000&socketTimeout=30000&jdbcCompliantTruncation=No&zeroDateTimeBehavior=convertToNull
+    username: jindi_b_rw
+

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jindidata.user.redpacket.mapper.userfollow.GetRedPacketMapper">
+
+
+    <sql id="where_sql_common">
+        <if test="userId!=null">
+            and oo.userId=#{userId,jdbcType=BIGINT}
+        </if>
+        <if test="startTime!=null">
+            and oo.createDate &gt;= #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime!=null">
+            and oo.createDate &lt;= #{endTime,jdbcType=TIMESTAMP}
+        </if>
+    </sql>
+
+
+    <sql id="where_sql_pro">
+        <if test="keyword!=null and keyword!=''">
+            <bind name="keywordReg" value="'%'+keyword+'%'"/>
+        </if>
+        <where>
+            <include refid="where_sql_common"/>
+            <if test="keywordReg!=null">
+                and (oo.redType like #{keywordReg} or
+                oo.sendRedPacketId like #{keywordReg} )
+            </if>
+        </where>
+    </sql>
+
+
+    <sql id="limit_sql">
+        <if test="offset!=null and ps!=null">
+            limit
+            #{offset,jdbcType=BIGINT},#{ps,jdbcType=BIGINT}
+        </if>
+    </sql>
+
+
+    <!-- 保存我抢到的红包 -->
+    <insert id="saveGetPacket" parameterType="Map">
+        INSERT INTO t_getredpacket (sendRedPacketId,
+                                    groupId,
+                                    userId,
+                                    money,
+                                    createDate,
+                                    months,
+                                    days,
+                                    status)
+        VALUES (#{sendRedPacketId},
+                #{groupId},
+                #{userId},
+                #{money},
+                now(),
+                #{months},
+                #{days},
+                #{status})
+    </insert>
+
+
+    <select id="findGetRedPackets" resultType="com.jindidata.user.redpacket.pojo.po.GetRedPacket"
+            parameterType="com.jindidata.user.redpacket.pojo.query.RedPacketQueryModel">
+        select oo.*
+        from t_getredpacket oo
+        <include refid="where_sql_pro"/>
+        order by oo.${orderBy} desc
+        <include refid="limit_sql"/>
+    </select>
+    <!--对应数量-->
+    <select id="findGetRedPacketsCount" resultType="java.lang.Integer"
+            parameterType="com.jindidata.user.redpacket.pojo.query.RedPacketQueryModel">
+        select count(1)
+        from t_getredpacket oo
+        <include refid="where_sql_pro"/>
+    </select>
+
+
+</mapper>

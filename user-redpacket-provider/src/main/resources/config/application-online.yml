@@ -1,0 +1,5 @@
+apollo:
+  meta: http://xxx:10004/
+
+sentry:
+  dsn: http://1de3cc3a2fae4d9bba74be9acb6679b0@xxx:9000/2

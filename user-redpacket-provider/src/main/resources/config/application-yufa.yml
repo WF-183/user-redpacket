@@ -1,0 +1,5 @@
+apollo:
+  meta: http://xxx:10004/
+
+sentry:
+  dsn: http://f5ae2ad5a0204da1b9effa3dda104ffd@sentry.pre.jindidata.com/2

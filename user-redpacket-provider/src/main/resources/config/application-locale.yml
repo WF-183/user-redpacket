@@ -1,0 +1,8 @@
+app:
+  logdir: ./logs
+
+apollo:
+  meta: http://39.96.180.128:10004
+
+sentry:
+  dsn: http://1de3cc3a2fae4d9bba74be9acb6679b0@10.2.16.50:9000/2
